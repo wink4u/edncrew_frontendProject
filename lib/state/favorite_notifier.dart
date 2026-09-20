@@ -4,7 +4,7 @@ import '../domain/stock.dart';
 
 // 관심 목록을 들고 있는 상태관리
 // ChangeNotifier는 값이 바뀌면 알려주는 기능을 가짐
-class FavoriteSaver extends ChangeNotifier {
+class FavoriteNotifier extends ChangeNotifier {
 
   // 키 값은 domestic:000000, 값은 Stock
   // Map은 넣은 순서를 기억하는 것을 활용
