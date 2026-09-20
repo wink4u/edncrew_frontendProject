@@ -10,7 +10,7 @@ class RealtimePriceApi {
     if (symbols.isEmpty) return const [];
 
     final uri = Uri.https('polling.finance.naver.com', '/api/realtime',
-      {'query': 'SERVICE_ITEM>:${symbols.join(',')}'});
+      {'query': 'SERVICE_ITEM:${symbols.join(',')}'});
 
     final json = await _client.getJson(uri, eucKr: true);
 
