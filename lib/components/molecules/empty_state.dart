@@ -10,16 +10,20 @@ class EmptyState extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.description,
+    this.action,   // 아래에 붙일 위젯(버튼 등). 없어도 됨
   });
 
   final IconData icon;
   final String title;
   final String description;
+  final Widget? action;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final dimens = context.dimens;
+    // 필드는 null 검사가 통하지 않아서 지역 변수로 복사한다.
+    final action = this.action;
 
     // 남는 공간의 가운데에 넣기위한 Center
     return Center(
@@ -42,7 +46,12 @@ class EmptyState extends StatelessWidget {
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: TextStyles.emptySubtitle.copyWith(color: colors.textTertiary),
-            )
+            ),
+            // 버튼 같은 위젯이 있을 때만 간격과 함께 추가
+            if (action != null) ...[
+              SizedBox(height: dimens.space4),
+              action,
+            ],
           ],
         )
       )
