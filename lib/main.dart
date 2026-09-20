@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'core/network/api_client.dart';
+import 'data/datasource/search_autocomplete_api.dart';
+import 'data/repository/search_auto_repository.dart';
+import 'pages/search_page.dart';
+import 'state/favorite_notifier.dart';
+import 'state/search_notifier.dart';
 import 'theme/theme.dart';
 
 void main() {
@@ -11,78 +18,34 @@ class EdencrewAssignmentApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '이든크루 평가 과제',
-      theme: AppTheme.dark,
-      home: const StartHereScreen(),
-    );
-  }
-}
+    // MultiProvider: 여러 provider를 한 번에 등록한다.
+    // MaterialApp "위"에 두어서 앱 안의 모든 화면(상세 화면 포함)이 꺼내 쓸 수 있게 한다.
+    return MultiProvider(
+      providers: [
+        // 1. 통신 통로. 앱 전체에서 하나를 공유한다.
+        Provider<ApiClient>(create: (_) => ApiClient()),
 
-/// 과제 시작점입니다. 이 화면은 지우고 직접 구현한 화면으로 바꿔 주세요.
-///
-/// 디자인 토큰을 어떻게 꺼내 쓰는지 보여주는 예시이기도 합니다.
-class StartHereScreen extends StatelessWidget {
-  const StartHereScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final AppColors colors = context.colors;
-    final AppDimens dimens = context.dimens;
-
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(dimens.space5),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                '이든크루 평가 과제',
-                style: TextStyle(
-                  color: colors.textPrimary,
-                  fontSize: 24,
-                  fontWeight: AppTypography.bold,
-                ),
-              ),
-              SizedBox(height: dimens.space2),
-              Text(
-                'README.md를 먼저 읽고, 이 화면부터 교체해 주세요.\n'
-                '색과 간격은 lib/theme의 토큰을 통해서만 사용해 주세요.',
-                style: TextStyle(
-                  color: colors.textSecondary,
-                  fontSize: 14,
-                  fontWeight: AppTypography.regular,
-                  height: 1.5,
-                ),
-              ),
-              SizedBox(height: dimens.space5),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: dimens.space3,
-                  vertical: dimens.space2,
-                ),
-                decoration: BoxDecoration(
-                  color: colors.accentBg,
-                  borderRadius: BorderRadius.circular(dimens.radiusMd),
-                  border: Border.all(
-                    color: colors.borderSubtle,
-                    width: dimens.borderHairline,
-                  ),
-                ),
-                child: Text(
-                  'context.colors / context.dimens',
-                  style: TextStyle(
-                    color: colors.accentDefault,
-                    fontSize: 13,
-                    fontWeight: AppTypography.medium,
-                  ),
-                ),
-              ),
-            ],
+        // 2. 검색 repository. 앞에서 등록한 ApiClient를 꺼내 datasource에 넣는다.
+        Provider<SearchAutoRepository>(
+          create: (context) => SearchAutoRepository(
+            SearchAutocompleteApi(context.read<ApiClient>()),
           ),
         ),
+
+        // 3. 관심 목록 상태. ChangeNotifier라서 ChangeNotifierProvider를 쓴다.
+        ChangeNotifierProvider<FavoriteNotifier>(
+          create: (_) => FavoriteNotifier(),
+        ),
+
+        // 4. 검색 상태. repository를 꺼내 넣는다.
+        ChangeNotifierProvider<SearchNotifier>(
+          create: (context) => SearchNotifier(context.read<SearchAutoRepository>()),
+        ),
+      ],
+      child: MaterialApp(
+        title: '이든크루 평가 과제',
+        theme: AppTheme.dark,
+        home: const SearchPage(),   // 나중에 shell(하단 탭)로 교체
       ),
     );
   }
