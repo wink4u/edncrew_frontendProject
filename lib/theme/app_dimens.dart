@@ -20,6 +20,7 @@ class AppDimens extends ThemeExtension<AppDimens> {
     required this.borderHairline,
     required this.iconSm,
     required this.iconMd,
+    required this.iconLg,
     required this.rowMinHeight,
     required this.tabBarHeight,
   });
@@ -37,6 +38,7 @@ class AppDimens extends ThemeExtension<AppDimens> {
         borderHairline = 1,
         iconSm = 16,
         iconMd = 20,
+        iconLg = 40,
         rowMinHeight = 56,
         tabBarHeight = 56;
 
@@ -55,6 +57,7 @@ class AppDimens extends ThemeExtension<AppDimens> {
 
   final double iconSm;
   final double iconMd;
+  final double iconLg;
 
   /// 목록 행의 최소 높이입니다.
   final double rowMinHeight;
@@ -76,6 +79,7 @@ class AppDimens extends ThemeExtension<AppDimens> {
     double? borderHairline,
     double? iconSm,
     double? iconMd,
+    double? iconLg,
     double? rowMinHeight,
     double? tabBarHeight,
   }) {
@@ -92,6 +96,7 @@ class AppDimens extends ThemeExtension<AppDimens> {
       borderHairline: borderHairline ?? this.borderHairline,
       iconSm: iconSm ?? this.iconSm,
       iconMd: iconMd ?? this.iconMd,
+      iconLg: iconLg ?? this.iconLg,
       rowMinHeight: rowMinHeight ?? this.rowMinHeight,
       tabBarHeight: tabBarHeight ?? this.tabBarHeight,
     );
@@ -113,6 +118,7 @@ class AppDimens extends ThemeExtension<AppDimens> {
       borderHairline: lerpDouble(borderHairline, other.borderHairline, t)!,
       iconSm: lerpDouble(iconSm, other.iconSm, t)!,
       iconMd: lerpDouble(iconMd, other.iconMd, t)!,
+      iconLg: lerpDouble(iconLg, other.iconLg, t)!,
       rowMinHeight: lerpDouble(rowMinHeight, other.rowMinHeight, t)!,
       tabBarHeight: lerpDouble(tabBarHeight, other.tabBarHeight, t)!,
     );
