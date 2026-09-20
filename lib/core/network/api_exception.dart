@@ -1,8 +1,9 @@
-enum ApiErrorType { network, timeout, http }
+enum ApiErrorType { network, timeout, http, parse }
 
 // network 인터넷 끊김 현상
 // timeout 응답 제한 시간 초과
 // http 서버 상태 코드 200이 아닌 경우
+// parse JSON을 읽지 못한 경우
 
 class ApiException implements Exception {
   // 생성자
