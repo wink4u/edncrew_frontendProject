@@ -67,7 +67,7 @@ class DailyPriceTable extends StatelessWidget {
             text,
             style: TextStyles.tableCell.copyWith(color: context.colors.textTertiary),
           ),
-          if (action != null) action,
+          ?action,
         ],
       ),
     ),
