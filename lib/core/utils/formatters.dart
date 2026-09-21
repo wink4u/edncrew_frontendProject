@@ -42,3 +42,18 @@ String formatChangeWithRate(int change, double rate) =>
 ///  (-400, -0.22) → '400 (-0.22%)' / (0, 0) → '0 (0.00%)'
 String formatDetailChange(int change, double rate) =>
     '${formatPrice(change.abs())} (${formatChangeRate(rate)})';
+
+/// 거래량은 천 단위. 29113456 → '29,113천' (1,000 미만은 그대로)
+String formatVolume(int volume) =>
+    volume < 1000 ? formatPrice(volume) : '${formatPrice(volume ~/ 1000)}천';
+
+/// 시가총액. 1조 이상은 '조', 1억 이상은 '억' 단위로 내림.
+///  1063000000000000 → '1,063조' / 350000000000 → '3,500억'
+String formatMarketCap(int value) {
+  const jo = 1000000000000;
+  const eok = 100000000;
+
+  if (value >= jo) return '${formatPrice(value ~/ jo)}조';
+  if (value >= eok) return '${formatPrice(value ~/ eok)}억';
+  return formatPrice(value);
+}
