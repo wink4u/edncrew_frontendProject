@@ -1,3 +1,9 @@
+// 이 파일의 테스트에 'live'(실서버) 꼬리표를 붙인다. 인터넷이 없으면 실패한다.
+//   실서버 테스트만:  flutter test --tags live
+//   실서버 제외:      flutter test --exclude-tags live
+@Tags(['live'])
+library;
+
 import 'package:edencrew_assignment_starter/core/network/api_client.dart';
 import 'package:edencrew_assignment_starter/data/datasource/search_autocomplete_api.dart';
 import 'package:edencrew_assignment_starter/data/datasource/realtime_price_api.dart';
