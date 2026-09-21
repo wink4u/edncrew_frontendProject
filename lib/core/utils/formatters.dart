@@ -57,3 +57,7 @@ String formatMarketCap(int value) {
   if (value >= eok) return '${formatPrice(value ~/ eok)}억';
   return formatPrice(value);
 }
+
+/// 날짜를 'MM.DD'로.  2026-09-21 -> '09.21'
+String formatMonthDay(DateTime d) =>
+    '${d.month.toString().padLeft(2, '0')}.${d.day.toString().padLeft(2, '0')}';
