@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'core/network/api_client.dart';
+import 'data/datasource/realtime_price_api.dart';
 import 'data/datasource/search_autocomplete_api.dart';
+import 'data/repository/quote_repository.dart';
 import 'data/repository/search_auto_repository.dart';
 import 'pages/search_page.dart';
 import 'state/favorite_notifier.dart';
+import 'state/likelist_notifier.dart';
 import 'state/search_notifier.dart';
 import 'theme/theme.dart';
 
@@ -32,14 +35,30 @@ class EdencrewAssignmentApp extends StatelessWidget {
           ),
         ),
 
-        // 3. 관심 목록 상태. ChangeNotifier라서 ChangeNotifierProvider를 쓴다.
+        // 3. 시세 repository. 관심 화면과 상세 화면이 함께 쓴다.
+        Provider<QuoteRepository>(
+          create: (context) => QuoteRepository(
+            RealtimePriceApi(context.read<ApiClient>()),
+          ),
+        ),
+
+        // 4. 관심 목록 상태. ChangeNotifier라서 ChangeNotifierProvider를 쓴다.
         ChangeNotifierProvider<FavoriteNotifier>(
           create: (_) => FavoriteNotifier(),
         ),
 
-        // 4. 검색 상태. repository를 꺼내 넣는다.
+        // 5. 검색 상태. repository를 꺼내 넣는다.
         ChangeNotifierProvider<SearchNotifier>(
           create: (context) => SearchNotifier(context.read<SearchAutoRepository>()),
+        ),
+
+        // 6. 관심 화면 상태. 위에서 등록한 관심 목록과 시세 repository를 꺼내 넣는다.
+        //    (그래서 이 둘보다 아래에 있어야 한다)
+        ChangeNotifierProvider<LikelistNotifier>(
+          create: (context) => LikelistNotifier(
+            favorites: context.read<FavoriteNotifier>(),
+            quotes: context.read<QuoteRepository>(),
+          ),
         ),
       ],
       child: MaterialApp(
