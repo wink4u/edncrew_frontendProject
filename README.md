@@ -192,10 +192,12 @@ lib/
 | 검색 | `ac.stock.naver.com/ac` (자동완성) |
 | 관심, 상세 | `polling.finance.naver.com/api/realtime` (실시간 시세) |
 | 상세 | `api.stock.naver.com/chart/domestic/item/{symbol}/day` (일별 시세, JSON) |
+| (화면에서는 사용하지 않음) | `stock.naver.com/api/securityFe/api/fchart/domestic/stock/{symbol}` (종목 메타데이터) |
 
 - **관심종목 시세는 한 번의 요청으로 묶어서** 조회합니다. 새로 등록한 종목만 새로 묻고, 새로고침은 전체를 한 번에 묻습니다.
 - 등락은 `현재가 - 전일 종가`, 시가총액은 `현재가 × 상장 주식 수`로 계산합니다.
 - 검색 결과는 국내 주식(`KOR`, `stock`)이고 6자리 종목코드인 것만 남깁니다.
+- **종목 메타데이터 API**: 요청(`StockMetadataApi`), 파싱과 DTO(`StockMetadataDto`), `Stock` 변환과 종목별 캐시(`StockRepository`)까지 구현하고 `api_test.dart`로 확인했지만, **화면에서는 호출하지 않았습니다.** 검색 결과에 종목명과 시장명(`005930 · 코스피`의 그 값)이 이미 들어 있어서, 검색, 관심, 상세 세 화면이 같은 `Stock` 모델을 재사용하고 같은 값을 다시 요청하지 않도록 했기 때문입니다.
 
 ### 일별 시세와 기간 탭 (구간 재사용)
 
