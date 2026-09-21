@@ -6,7 +6,7 @@ import 'data/datasource/realtime_price_api.dart';
 import 'data/datasource/search_autocomplete_api.dart';
 import 'data/repository/quote_repository.dart';
 import 'data/repository/search_auto_repository.dart';
-import 'pages/search_page.dart';
+import 'pages/main_shell.dart';
 import 'state/favorite_notifier.dart';
 import 'state/likelist_notifier.dart';
 import 'state/search_notifier.dart';
@@ -64,7 +64,7 @@ class EdencrewAssignmentApp extends StatelessWidget {
       child: MaterialApp(
         title: '이든크루 평가 과제',
         theme: AppTheme.dark,
-        home: const SearchPage(),   // 나중에 shell(하단 탭)로 교체
+        home: const MainShell(),
       ),
     );
   }
