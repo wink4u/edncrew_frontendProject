@@ -6,6 +6,7 @@ import '../components/molecules/candle_chart.dart';
 import '../components/molecules/detail_price_summary.dart';
 import '../components/molecules/empty_state.dart';
 import '../components/molecules/toast_snack_bar.dart';
+import '../components/organisms/daily_price_table.dart';
 import '../components/organisms/detail_header.dart';
 import '../components/organisms/period_tab_bar.dart';
 import '../components/organisms/summary_grid.dart';
@@ -13,6 +14,7 @@ import '../core/network/api_client.dart';
 import '../data/datasource/daily_price_api.dart';
 import '../data/repository/daily_price_repository.dart';
 import '../data/repository/quote_repository.dart';
+import '../domain/chart_period.dart';
 import '../domain/stock.dart';
 import '../state/detail_notifier.dart';
 import '../state/favorite_notifier.dart';
@@ -104,7 +106,25 @@ class _DetailBody extends StatelessWidget {
         const _ChartArea(),
         SizedBox(height: dimens.space4),         // TODO(figma): 차트와 카드 사이 간격
         SummaryGrid(quote: detail.quote),
+        SizedBox(height: dimens.space6),   // 24
+        const _DailyTableArea(),
       ],
+    );
+  }
+}
+
+// 일별 시세 표 자리: 받았으면 표, 실패면 다시 시도, 아직이면 스켈레톤
+class _DailyTableArea extends StatelessWidget {
+  const _DailyTableArea();
+
+  @override
+  Widget build(BuildContext context) {
+    final detail = context.watch<DetailNotifier>();
+
+    return DailyPriceTable(
+      candles: detail.hasRecentCandles ? detail.recentCandles : null,
+      hasError: detail.recentCandlesError != null && !detail.hasRecentCandles,
+      onRetry: () => detail.loadCandles(ChartPeriod.oneMonth),
     );
   }
 }
