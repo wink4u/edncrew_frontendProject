@@ -37,3 +37,8 @@ String formatChangeRate(double rate) {
 /// 화면에 나오는 한 덩어리.  (8500, 2.36) → '+8,500 (+2.36%)'
 String formatChangeWithRate(int change, double rate) =>
     '${formatChange(change)} (${formatChangeRate(rate)})';
+
+/// 상세 화면의 등락. 금액에는 부호를 붙이지 않고 등락률에만 붙인다.
+///  (-400, -0.22) → '400 (-0.22%)' / (0, 0) → '0 (0.00%)'
+String formatDetailChange(int change, double rate) =>
+    '${formatPrice(change.abs())} (${formatChangeRate(rate)})';
