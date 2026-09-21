@@ -48,6 +48,15 @@ class DetailNotifier extends ChangeNotifier {
   bool get hasCandles => _candles.containsKey(_period);   // 받았는지 (비어 있어도 받은 것)
   Object? get candlesError => _candleErrors[_period];
 
+  // 일별 시세 표에 보여 줄 최근 거래일 수
+  static const int tableDays = 5;
+
+  // 일별 시세 표: 기간 탭과 상관없이 항상 최근 tableDays일 (최신이 앞). 1개월 캔들에서 가져온다.
+  List<Candle> get recentCandles =>
+      (_candles[ChartPeriod.oneMonth] ?? const <Candle>[]).reversed.take(tableDays).toList();
+  bool get hasRecentCandles => _candles.containsKey(ChartPeriod.oneMonth);
+  Object? get recentCandlesError => _candleErrors[ChartPeriod.oneMonth];
+
   // 기간 탭을 눌렀을 때. 같은 탭이면 아무것도 하지 않는다.
   void setPeriod(ChartPeriod period) {
     if (period == _period) return;
@@ -56,10 +65,10 @@ class DetailNotifier extends ChangeNotifier {
     loadCandles();
   }
 
-  // 선택된 기간의 캔들을 불러온다.
+  // 기간의 캔들을 불러온다. 기간을 안 주면 지금 선택된 기간.
   // 이미 받았거나 받는 중이면 아무것도 하지 않는다. 실패 뒤 '다시 시도'에도 쓴다.
-  Future<void> loadCandles() async {
-    final period = _period;
+  Future<void> loadCandles([ChartPeriod? target]) async {
+    final period = target ?? _period;
     if (_candles.containsKey(period) || _loadingPeriods.contains(period)) return;
 
     _loadingPeriods.add(period);
