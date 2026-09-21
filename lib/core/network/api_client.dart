@@ -61,6 +61,21 @@ class ApiClient {
       throw ApiException(ApiErrorType.parse, 'Invalid JSON: ${e.message}');
     }
   }
+
+  // 최상위가 배열([])인 JSON 응답용
+  Future<List<dynamic>> getJsonList(Uri uri) async {
+    final bytes = await getBytes(uri);
+
+    try {
+      return jsonDecode(utf8.decode(bytes)) as List<dynamic>;
+    } on FormatException catch (e) {
+      // JSON 문법이 틀렸을 때
+      throw ApiException(ApiErrorType.parse, 'Invalid JSON: ${e.message}');
+    } on TypeError {
+      // 문법은 맞지만 배열이 아닐 때 ({}가 온 경우 등)
+      throw ApiException(ApiErrorType.parse, 'JSON 배열이 아닙니다: $uri');
+    }
+  }
 }
 
 
