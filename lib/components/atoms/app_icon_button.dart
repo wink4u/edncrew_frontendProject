@@ -9,6 +9,7 @@ class AppIconButton extends StatelessWidget {
     required this.tooltip,    // 문구
     this.color,               // 색
     this.size,                // 크기
+    this.constraints,         // 터치 영역 크기. 없으면 기본 48x48
   });
 
   final IconData icon;
@@ -16,6 +17,7 @@ class AppIconButton extends StatelessWidget {
   final String tooltip;
   final Color? color;
   final double? size;
+  final BoxConstraints? constraints;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,11 @@ class AppIconButton extends StatelessWidget {
       icon: Icon(icon),
       color: color ?? context.colors.textSecondary,
       iconSize: size ?? context.dimens.iconMd,
+      constraints: constraints,
+      // 터치 영역을 줄일 때는 기본 48 보정을 끈다.
+      style: constraints == null
+          ? null
+          : IconButton.styleFrom(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
     );
   }
 }
