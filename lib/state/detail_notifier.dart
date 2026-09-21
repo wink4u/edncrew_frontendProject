@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/repository/quote_repository.dart';
+import '../domain/chart_period.dart';
 import '../domain/quote.dart';
 import '../domain/stock.dart';
 
@@ -16,6 +17,7 @@ class DetailNotifier extends ChangeNotifier {
   final QuoteRepository _quoteRepository;
 
   Quote? _quote;
+  ChartPeriod _period = ChartPeriod.oneMonth;   // 처음에는 1개월
   bool _isLoading = false;
   Object? _error;
 
@@ -23,8 +25,16 @@ class DetailNotifier extends ChangeNotifier {
   bool _disposed = false;   // 화면이 닫힌 뒤에 notify하지 않기 위해
 
   Quote? get quote => _quote;
+  ChartPeriod get period => _period;
   bool get isLoading => _isLoading;
   Object? get error => _error;
+
+  // 기간 탭을 눌렀을 때. 같은 탭이면 아무것도 하지 않는다.
+  void setPeriod(ChartPeriod period) {
+    if (period == _period) return;
+    _period = period;
+    notifyListeners();
+  }
 
   // 처음 진입, 다시 시도 모두 이 함수를 쓴다.
   Future<void> load() async {
