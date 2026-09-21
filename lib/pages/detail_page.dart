@@ -1,8 +1,7 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../components/atoms/text_styles.dart';
 import '../components/molecules/candle_chart.dart';
 import '../components/molecules/detail_price_summary.dart';
 import '../components/molecules/empty_state.dart';
@@ -10,9 +9,10 @@ import '../components/molecules/toast_snack_bar.dart';
 import '../components/organisms/detail_header.dart';
 import '../components/organisms/period_tab_bar.dart';
 import '../components/organisms/summary_grid.dart';
+import '../core/network/api_client.dart';
+import '../data/datasource/daily_price_api.dart';
+import '../data/repository/daily_price_repository.dart';
 import '../data/repository/quote_repository.dart';
-import '../domain/candle.dart';
-import '../domain/chart_period.dart';
 import '../domain/stock.dart';
 import '../state/detail_notifier.dart';
 import '../state/favorite_notifier.dart';
@@ -28,6 +28,10 @@ class DetailPage extends StatelessWidget {
       create: (context) => DetailNotifier(
         stock: stock,
         quotes: context.read<QuoteRepository>(),
+        // 받아 둔 캔들이 이 화면과 함께 사라지도록 화면마다 새로 만든다.
+        dailyPrices: DailyPriceRepository(
+          DailyPriceApi(context.read<ApiClient>()),
+        ),
       ),
       child: const DetailPage(),
     ),
@@ -97,7 +101,7 @@ class _DetailBody extends StatelessWidget {
         SizedBox(height: dimens.space4),
         PeriodTabBar(selected: detail.period, onSelected: detail.setPeriod),
         SizedBox(height: dimens.space4),
-        CandleChart(candles: _sampleCandles(detail.period)),   // TODO: 일별 시세 연결 시 실제 데이터로 교체
+        const _ChartArea(),
         SizedBox(height: dimens.space4),         // TODO(figma): 차트와 카드 사이 간격
         SummaryGrid(quote: detail.quote),
       ],
@@ -105,30 +109,37 @@ class _DetailBody extends StatelessWidget {
   }
 }
 
+// 차트 자리: 받았으면 차트, 실패했으면 다시 시도, 아직이면 로딩
+class _ChartArea extends StatelessWidget {
+  const _ChartArea();
 
-// TODO: 일별 시세를 연결하면 삭제. 기간마다 캔들 개수만 다르게 만든 가짜 데이터.
-List<Candle> _sampleCandles(ChartPeriod period) {
-  final count = switch (period) {
-    ChartPeriod.oneMonth => 20,
-    ChartPeriod.threeMonths => 60,
-    ChartPeriod.sixMonths => 120,
-    ChartPeriod.oneYear => 245,
-  };
-  final random = math.Random(7);   // 같은 값이 나오게 씨앗을 고정
-  var price = 170000;
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final detail = context.watch<DetailNotifier>();
 
-  return [
-    for (var i = 0; i < count; i++)
-      () {
-        final open = price;
-        final close = open + random.nextInt(6000) - 3000;
-        final high = math.max(open, close) + random.nextInt(2500);
-        final low = math.min(open, close) - random.nextInt(2500);
-        price = close;
-        return Candle(
-          date: DateTime(2026, 1, 1).add(Duration(days: i)),
-          open: open, high: high, low: low, close: close, volume: 1000,
-        );
-      }(),
-  ];
+    if (detail.hasCandles) return CandleChart(candles: detail.candles);
+
+    // 차트와 같은 높이를 유지해서 아래 요소가 움직이지 않게 한다.
+    return SizedBox(
+      height: CandleChart.height,
+      child: Center(
+        child: detail.candlesError == null
+            ? CircularProgressIndicator(color: colors.accentDefault)
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '차트를 불러오지 못했습니다',
+                    style: TextStyles.emptySubtitle.copyWith(color: colors.textTertiary),
+                  ),
+                  TextButton(
+                    onPressed: detail.loadCandles,
+                    child: const Text('다시 시도'),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
 }
