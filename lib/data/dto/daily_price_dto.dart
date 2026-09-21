@@ -11,7 +11,7 @@ class DailyPriceDto {
   final DateTime date;  // 날짜
   final int close;      // 종가
   final int open;       // 시가
-  final int high;       // 고자
+  final int high;       // 고가
   final int low;        // 저가
   final int volume;     // 거래량
 
