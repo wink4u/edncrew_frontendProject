@@ -1,6 +1,9 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../components/molecules/candle_chart.dart';
 import '../components/molecules/detail_price_summary.dart';
 import '../components/molecules/empty_state.dart';
 import '../components/molecules/toast_snack_bar.dart';
@@ -8,6 +11,8 @@ import '../components/organisms/detail_header.dart';
 import '../components/organisms/period_tab_bar.dart';
 import '../components/organisms/summary_grid.dart';
 import '../data/repository/quote_repository.dart';
+import '../domain/candle.dart';
+import '../domain/chart_period.dart';
 import '../domain/stock.dart';
 import '../state/detail_notifier.dart';
 import '../state/favorite_notifier.dart';
@@ -69,8 +74,6 @@ class DetailPage extends StatelessWidget {
 class _DetailBody extends StatelessWidget {
   const _DetailBody();
 
-  static const double _chartHeight = 200;
-
   @override
   Widget build(BuildContext context) {
     final dimens = context.dimens;
@@ -94,10 +97,38 @@ class _DetailBody extends StatelessWidget {
         SizedBox(height: dimens.space4),
         PeriodTabBar(selected: detail.period, onSelected: detail.setPeriod),
         SizedBox(height: dimens.space4),
-        const SizedBox(height: _chartHeight),   // 차트 자리 (나중에 차트로 교체)
+        CandleChart(candles: _sampleCandles(detail.period)),   // TODO: 일별 시세 연결 시 실제 데이터로 교체
         SizedBox(height: dimens.space4),         // TODO(figma): 차트와 카드 사이 간격
         SummaryGrid(quote: detail.quote),
       ],
     );
   }
+}
+
+
+// TODO: 일별 시세를 연결하면 삭제. 기간마다 캔들 개수만 다르게 만든 가짜 데이터.
+List<Candle> _sampleCandles(ChartPeriod period) {
+  final count = switch (period) {
+    ChartPeriod.oneMonth => 20,
+    ChartPeriod.threeMonths => 60,
+    ChartPeriod.sixMonths => 120,
+    ChartPeriod.oneYear => 245,
+  };
+  final random = math.Random(7);   // 같은 값이 나오게 씨앗을 고정
+  var price = 170000;
+
+  return [
+    for (var i = 0; i < count; i++)
+      () {
+        final open = price;
+        final close = open + random.nextInt(6000) - 3000;
+        final high = math.max(open, close) + random.nextInt(2500);
+        final low = math.min(open, close) - random.nextInt(2500);
+        price = close;
+        return Candle(
+          date: DateTime(2026, 1, 1).add(Duration(days: i)),
+          open: open, high: high, low: low, close: close, volume: 1000,
+        );
+      }(),
+  ];
 }
