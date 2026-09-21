@@ -17,7 +17,10 @@ void main() {
 }
 
 class EdencrewAssignmentApp extends StatelessWidget {
-  const EdencrewAssignmentApp({super.key});
+  // apiClient: 테스트에서 가짜 통신을 끼워 넣기 위한 자리. 앱이 실제로 실행될 때는 비워 두면 진짜 통신을 쓴다.
+  const EdencrewAssignmentApp({super.key, this.apiClient});
+
+  final ApiClient? apiClient;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +29,7 @@ class EdencrewAssignmentApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         // 1. 통신 통로. 앱 전체에서 하나를 공유한다.
-        Provider<ApiClient>(create: (_) => ApiClient()),
+        Provider<ApiClient>(create: (_) => apiClient ?? ApiClient()),
 
         // 2. 검색 repository. 앞에서 등록한 ApiClient를 꺼내 datasource에 넣는다.
         Provider<SearchAutoRepository>(
