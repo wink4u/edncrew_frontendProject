@@ -5,6 +5,8 @@ import '../components/molecules/detail_price_summary.dart';
 import '../components/molecules/empty_state.dart';
 import '../components/molecules/toast_snack_bar.dart';
 import '../components/organisms/detail_header.dart';
+import '../components/organisms/period_tab_bar.dart';
+import '../components/organisms/summary_grid.dart';
 import '../data/repository/quote_repository.dart';
 import '../domain/stock.dart';
 import '../state/detail_notifier.dart';
@@ -67,6 +69,8 @@ class DetailPage extends StatelessWidget {
 class _DetailBody extends StatelessWidget {
   const _DetailBody();
 
+  static const double _chartHeight = 200;
+
   @override
   Widget build(BuildContext context) {
     final dimens = context.dimens;
@@ -87,6 +91,12 @@ class _DetailBody extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(dimens.space4, dimens.space2, dimens.space4, dimens.space4),
       children: [
         DetailPriceSummary(quote: detail.quote),
+        SizedBox(height: dimens.space4),
+        PeriodTabBar(selected: detail.period, onSelected: detail.setPeriod),
+        SizedBox(height: dimens.space4),
+        const SizedBox(height: _chartHeight),   // 차트 자리 (나중에 차트로 교체)
+        SizedBox(height: dimens.space4),         // TODO(figma): 차트와 카드 사이 간격
+        SummaryGrid(quote: detail.quote),
       ],
     );
   }
