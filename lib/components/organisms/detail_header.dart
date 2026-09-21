@@ -24,6 +24,8 @@ class DetailHeader extends StatelessWidget {
   static const double _minHeight = 55;      // Hug 55
   static const double _verticalPadding = 10;
   static const double _backInset = 12;      // 20px 화살표 양옆 여백 (터치 영역 44)
+  static const double _starTouchSize = 22;
+  static const double _contentHeight = _minHeight - _verticalPadding * 2;
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +45,19 @@ class DetailHeader extends StatelessWidget {
             icon: Icons.arrow_back,
             onPressed: onBack,
             tooltip: '뒤로 가기',
-            constraints: BoxConstraints.tightFor(width: backButtonWidth, height: 48),
+            constraints: BoxConstraints.tightFor(width: backButtonWidth, height: _contentHeight),
           ),
           Expanded(
             child: StockTitleBlock(name: stock.name, subtitle: stock.subtitle),
           ),
-          StarButton(isActive: isFavorite, onPressed: onFavoritePressed),
+          StarButton(
+            isActive: isFavorite,
+            onPressed: onFavoritePressed,
+            constraints: const BoxConstraints.tightFor(
+              width: _starTouchSize,
+              height: _starTouchSize,
+            ),
+          ),
           SizedBox(width: dimens.space4),
         ],
       ),
