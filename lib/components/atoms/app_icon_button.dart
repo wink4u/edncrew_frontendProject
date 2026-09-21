@@ -28,6 +28,7 @@ class AppIconButton extends StatelessWidget {
       color: color ?? context.colors.textSecondary,
       iconSize: size ?? context.dimens.iconMd,
       constraints: constraints,
+      padding: constraints == null ? null : EdgeInsets.zero,
       // 터치 영역을 줄일 때는 기본 48 보정을 끈다.
       style: constraints == null
           ? null
