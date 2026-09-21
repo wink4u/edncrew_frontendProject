@@ -16,6 +16,8 @@ class StockTitleBlock extends StatelessWidget {
   final String subtitle;
   final String highlightQuery;
 
+  static const double _lineGap = 1;   // 종목명과 부제 사이
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
@@ -30,7 +32,7 @@ class StockTitleBlock extends StatelessWidget {
           query: highlightQuery,
           style: TextStyles.stockName.copyWith(color: colors.textPrimary),
         ),
-        SizedBox(height: context.dimens.space1),
+        const SizedBox(height: _lineGap),
         Text(
           subtitle,
           maxLines: 1,
