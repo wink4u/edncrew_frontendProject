@@ -11,6 +11,7 @@ import '../state/favorite_notifier.dart';
 import '../state/search_notifier.dart';
 import '../state/search_status.dart';
 import '../theme/theme.dart';
+import 'detail_page.dart';
 
 // StatefulWidget -> TextEditingController 를 만들고 없애야함
 class SearchPage extends StatefulWidget {
@@ -156,7 +157,7 @@ class _ResultList extends StatelessWidget {
                   stock: stock,
                   query: query,
                   isFavorite: isFavorite,
-                  onTap: () {},
+                  onTap: () => Navigator.of(context).push(DetailPage.route(stock)),
                   onFavoritePressed: () => onFavoritePressed(stock),
               ),
           );

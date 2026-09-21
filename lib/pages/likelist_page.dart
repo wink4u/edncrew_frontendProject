@@ -8,6 +8,7 @@ import '../components/organisms/likelist_item.dart';
 import '../components/organisms/sort_bottom_sheet.dart';
 import '../state/likelist_notifier.dart';
 import '../theme/theme.dart';
+import 'detail_page.dart';
 
 // 관심 화면. 상태는 LikelistNotifier가 갖고, 이 화면은 보여주고 이벤트만 전달한다.
 class LikelistPage extends StatelessWidget {
@@ -111,7 +112,7 @@ class _LikelistBody extends StatelessWidget {
             key: ValueKey(item.stock.id),
             stock: item.stock,
             quote: item.quote,
-            onTap: () {}, // 종목 상세 화면이 생기면 연결
+            onTap: () => Navigator.of(context).push(DetailPage.route(item.stock)),
           );
         },
       ),
